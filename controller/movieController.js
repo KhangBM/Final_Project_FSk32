@@ -41,24 +41,24 @@ const createNewMovie = async (req, res) => {
 }
 
 const updateMovie = async (req, res) => {
-    const { id } = req.body
+    const { id } = req.params
     if(!mongoose.Types.ObjectId.isValid(id)){
         handleResponseError(res, 400, "Incorrect format id")
         return
     }
     const checkMovieIdDb = await Movies.findById(id)
-    if(!checkMovieIdDb){
+    if (!checkMovieIdDb){
         handleResponseError(res, 404, "Movie not found")
         return
     }
     const { title, year, poster } = req.body
-    if (!title || !year || !poster) {
+    if (!title || !year || !poster ) {
         handleResponseError(res, 400, "Bad request. All fields are required")
         return
     }
-    checkMovieIdDb.updateMovie({ title, year, poster })
+    await checkMovieIdDb.updateOne({ title, year, poster })
     handleResponseSuccess(res, 200, "Update movie successfully", {...checkMovieIdDb})
-}
+};
 
 const deleteMovie = async (req, res) => {
     const { id } = req.params 
